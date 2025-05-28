@@ -7,10 +7,9 @@ st.title("🐴 Horse Facility Profitability Dashboard")
 # --- Facility Inputs ---
 st.header("🏢 Facility")
 
-# Standard input block for expenses with selectable input mode
+# Flexible input block (Annual, Quarterly, Monthly → all standardized to quarterly)
 def expense_block(label, key_prefix):
-    st.subheader(label)
-
+    st.markdown(f"### {label}")
     col1, col2 = st.columns([1, 2])
     mode = col1.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key=f"{key_prefix}_mode")
     value = col2.number_input("Value", step=100.0, key=f"{key_prefix}_value")
@@ -25,9 +24,9 @@ def expense_block(label, key_prefix):
     st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
     return quarterly
 
-# Fixed annual input block with optional comment
+# Annual-only input with optional comment
 def annual_only_block(label, key_prefix):
-    st.subheader(label)
+    st.markdown(f"### {label}")
     col1, col2 = st.columns([1.5, 2])
     value = col1.number_input("Annual Value", step=100.0, key=f"{key_prefix}_value")
     note = col2.text_input("Comment (optional)", key=f"{key_prefix}_note")
@@ -37,23 +36,22 @@ def annual_only_block(label, key_prefix):
         st.markdown(f"📝 _Note: {note}_")
     return quarterly
 
-# Expense categories with input mode
+# --- Expense Entries ---
 q_insurance = expense_block("Property Insurance", "insurance")
 q_rent = expense_block("Property Rent", "rent")
 q_electric = expense_block("General Electric", "electric")
 q_water = expense_block("General Water", "water")
 
-# Fixed annual-only categories
 q_maintenance = annual_only_block("Maintenance", "maintenance")
 q_misc = annual_only_block("Miscellaneous", "misc")
 
-# Grand Total of all quarterly values
+# --- Quarterly Total Summary ---
 total_quarterly_facility_expense = (
     q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
 )
+
 st.subheader("🏁 Total Facility Expenses (Quarterly)")
 st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
-
 
 
 # --- Revenue Inputs ---
