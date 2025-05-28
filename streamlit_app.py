@@ -37,11 +37,10 @@ col2.metric("Annual Total", f"€{total_annual_property_expense:,.2f}")
 
 # --- Occupancy Inputs ---
 st.header("🐎 Occupancy")
-total_stalls = st.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
-
-col1, col2 = st.columns([1, 1])
-company_horses = col1.number_input("Company Horses", min_value=0, step=1, key="company_horses")
-# No price input for Company Horses
+col1, col2, col3 = st.columns([1, 1, 1])
+total_stalls = col1.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
+company_horses = col2.number_input("Company Horses", min_value=0, step=1, key="company_horses")
+open_barn_horses = col3.number_input("Open Barn Horses", min_value=0, step=1, key="open_barn_horses")
 
 col1, col2 = st.columns([1, 1])
 fullboard_training = col1.number_input("Fullboard Training", min_value=0, step=1, key="fullboard_training")
@@ -56,13 +55,13 @@ retirement_recovery_horse = col1.number_input("Retirement/Recovery Horse", min_v
 retirement_recovery_horse_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="retirement_recovery_horse_price")
 
 # Occupancy Calculations
-total_horses = fullboard_training + half_board + company_horses + retirement_recovery_horse
-remaining_stalls = total_stalls - total_horses
+total_horses = fullboard_training + half_board + company_horses + retirement_recovery_horse + open_barn_horses
+remaining_stalls = total_stalls - (fullboard_training + half_board + company_horses + retirement_recovery_horse)  # Open Barn Horses do not reduce stalls
 monthly_occupancy_revenue = (
     fullboard_training * fullboard_training_price +
     half_board * half_board_price +
     retirement_recovery_horse * retirement_recovery_horse_price
-)  # No revenue from Company Horses
+)  # No revenue from Company Horses or Open Barn Horses
 quarterly_occupancy_revenue = monthly_occupancy_revenue * 3
 annual_occupancy_revenue = monthly_occupancy_revenue * 12
 
@@ -70,11 +69,11 @@ st.subheader("📊 Occupancy Summary")
 col1, col2 = st.columns(2)
 col1.metric("Total Horses", f"{total_horses}")
 col2.metric("Remaining Stalls", f"{remaining_stalls}")
-col1.metric("Quarterly Total Revenue", f"€{quarterly_occupancy_revenue:,.2f}")
-col2.metric("Annual Total Revenue", f"€{annual_occupancy_revenue:,.2f}")
+col1.metric("Quarterly Occupancy Revenue", f"€{quarterly_occupancy_revenue:,.2f}")
+col2.metric("Annual Occupancy Revenue", f"€{annual_occupancy_revenue:,.2f}")
 
-# --- Added Revenue Inputs ---
-st.header("💵 Added Revenue")
+# --- Company Revenue Inputs ---
+st.header("💵 Company Revenue")
 
 col1, col2 = st.columns([1, 1])
 ivanka_private_count = col1.number_input("Ivanka Private Lessons", min_value=0, step=1, key="ivanka_private_count")
@@ -100,7 +99,7 @@ col1, col2 = st.columns([1, 1])
 led_rides_count = col1.number_input("Led Pony Rides", min_value=0, step=1, key="led_rides_count")
 led_rides_price = col2.number_input("Price (Per Half Hour)", min_value=0.0, step=10.0, key="led_rides_price")
 
-# Added Revenue Calculations
+# Company Revenue Calculations
 monthly_additional_revenue = (
     ivanka_private_count * ivanka_private_price +
     ivanka_group_count * ivanka_group_price +
@@ -119,6 +118,31 @@ col2.metric("Annual Total Revenue", f"€{annual_additional_revenue:,.2f}")
 
 # --- Per-Horse Costs ---
 st.header("🐎 Per-Horse Costs")
+
+def feed_cost_block():
+    st.subheader("Feed")
+    col1, col2, col3 = st.columns([1, 1, 1])
+    
+    bale_type = col1.selectbox("Bale Type", ["Square Bales", "Round Bales"], key="feed_bale_type")
+    price_per_bale = col2.number_input("Price Per Bale (€)", min_value=0.0, step=1.0, key="feed_price_per_bale")
+    horses_fed_per_month = col3.number_input("Horses Fed Per Month", min_value=1, step=1, key="feed_horses_fed", value=1)  # Default to 1 to avoid division by zero
+    
+    # Calculate cost per horse
+    if horses_fed_per_month > 0:
+        monthly_cost_per_horse = price_per_bale / horses_fed_per_month
+    else:
+        monthly_cost_per_horse = 0.0
+    
+    daily_cost_per_horse = monthly_cost_per_horse / 30
+    yearly_cost_per_horse = monthly_cost_per_horse * 12
+    
+    # Display totals
+    col1, col2, col3 = st.columns([1, 1, 1])
+    col1.metric("Daily Cost Per Horse", f"€{daily_cost_per_horse:,.2f}")
+    col2.metric("Monthly Cost Per Horse", f"€{monthly_cost_per_horse:,.2f}")
+    col3.metric("Yearly Cost Per Horse", f"€{yearly_cost_per_horse:,.2f}")
+    
+    return monthly_cost_per_horse
 
 def cost_block(label, key_prefix):
     st.subheader(label)
@@ -153,7 +177,7 @@ def cost_block(label, key_prefix):
 
     return st.session_state[f"{key_prefix}_monthly"]
 
-feed_monthly = cost_block("Feed", "feed")
+feed_monthly = feed_cost_block()
 bedding_monthly = cost_block("Bedding", "bedding")
 water_monthly = cost_block("Water", "water")
 electricity_monthly = cost_block("Electricity", "electricity")
