@@ -73,32 +73,44 @@ col2.metric("Annual Total Revenue", f"${annual_occupancy_revenue:,.2f}")
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
 
+col1, col2 = st.columns([1, 1])
 st.subheader("Ivanka Private Lessons")
-ivanka_private_price = st.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_private_price")
+ivanka_private_count = col1.number_input("Sessions Per Month", min_value=0, step=1, key="ivanka_private_count")
+ivanka_private_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_private_price")
 
+col1, col2 = st.columns([1, 1])
 st.subheader("Ivanka Group Lessons")
-ivanka_group_price = st.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_group_price")
+ivanka_group_count = col1.number_input("Sessions Per Month", min_value=0, step=1, key="ivanka_group_count")
+ivanka_group_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_group_price")
 
+col1, col2 = st.columns([1, 1])
 st.subheader("Kerry Mobile Sessions")
-kerry_mobile_price = st.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="kerry_mobile_price")
+kerry_mobile_count = col1.number_input("Sessions Per Month", min_value=0, step=1, key="kerry_mobile_count")
+kerry_mobile_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="kerry_mobile_price")
 
+col1, col2 = st.columns([1, 1])
 st.subheader("Parcore Guests")
-parcore_guests_price = st.number_input("Price (Per Guest)", min_value=0.0, step=10.0, key="parcore_guests_price")
+parcore_guests_count = col1.number_input("Guests Per Month", min_value=0, step=1, key="parcore_guests_count")
+parcore_guests_price = col2.number_input("Price (Per Guest)", min_value=0.0, step=10.0, key="parcore_guests_price")
 
+col1, col2 = st.columns([1, 1])
 st.subheader("Horse Hotel Guests")
-horse_hotel_price = st.number_input("Price (Per Night)", min_value=0.0, step=10.0, key="horse_hotel_price")
+horse_hotel_count = col1.number_input("Nights Per Month", min_value=0, step=1, key="horse_hotel_count")
+horse_hotel_price = col2.number_input("Price (Per Night)", min_value=0.0, step=10.0, key="horse_hotel_price")
 
+col1, col2 = st.columns([1, 1])
 st.subheader("Led Rides")
-led_rides_price = st.number_input("Price (Per Ride)", min_value=0.0, step=10.0, key="led_rides_price")
+led_rides_count = col1.number_input("Rides Per Month", min_value=0, step=1, key="led_rides_count")
+led_rides_price = col2.number_input("Price (Per Ride)", min_value=0.0, step=10.0, key="led_rides_price")
 
 # Revenue Calculations
 monthly_additional_revenue = (
-    ivanka_private_price +
-    ivanka_group_price +
-    kerry_mobile_price +
-    parcore_guests_price +
-    horse_hotel_price +
-    led_rides_price
+    ivanka_private_count * ivanka_private_price +
+    ivanka_group_count * ivanka_group_price +
+    kerry_mobile_count * kerry_mobile_price +
+    parcore_guests_count * parcore_guests_price +
+    horse_hotel_count * horse_hotel_price +
+    led_rides_count * led_rides_price
 )
 quarterly_additional_revenue = monthly_additional_revenue * 3
 annual_additional_revenue = monthly_additional_revenue * 12
