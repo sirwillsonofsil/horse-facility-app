@@ -86,8 +86,8 @@ kerry_mobile_count = col1.number_input("Kerry Mobile Sessions", min_value=0, ste
 kerry_mobile_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="kerry_mobile_price")
 
 col1, col2 = st.columns([1, 1])
-parcore_guests_count = col1.number_input("Parcore Guests", min_value=0, step=1, key="parcore_guests_count")
-parcore_guests_price = col2.number_input("Price (Per Guest)", min_value=0.0, step=10.0, key="parcore_guests_price")
+parkour_guests_count = col1.number_input("Parkour Guests", min_value=0, step=1, key="parkour_guests_count")
+parkour_guests_price = col2.number_input("Price (Per Guest)", min_value=0.0, step=10.0, key="parkour_guests_price")
 
 col1, col2 = st.columns([1, 1])
 horse_hotel_count = col1.number_input("Horse Hotel Guests", min_value=0, step=1, key="horse_hotel_count")
@@ -102,7 +102,7 @@ monthly_additional_revenue = (
     ivanka_private_count * ivanka_private_price +
     ivanka_group_count * ivanka_group_price +
     kerry_mobile_count * kerry_mobile_price +
-    parcore_guests_count * parcore_guests_price +
+    parkour_guests_count * parkour_guests_price +
     horse_hotel_count * horse_hotel_price +
     led_rides_count * led_rides_price
 )
@@ -116,10 +116,54 @@ col2.metric("Annual Total Revenue", f"${annual_additional_revenue:,.2f}")
 
 # --- Cost Inputs ---
 st.header("🐎 Per-Horse Monthly Costs")
-feed = st.number_input("Feed Cost", min_value=0.0, step=10.0)
-labor = st.number_input("Labor Cost", min_value=0.0, step=10.0)
-utilities = st.number_input("Utilities", min_value=0.0, step=10.0)
-misc = st.number_input("Misc Per-Horse Monthly Cost", min_value=0.0, step=10.0)
+
+def cost_block(label, key_prefix):
+    st.subheader(label)
+    col1, col2, col3 = st.columns([1, 1, 1])
+    
+    # Initialize session state if not present
+    if f"{key_prefix}_daily" not in st.session_state:
+        st.session_state[f"{key_prefix}_daily"] = 0.0
+        st.session_state[f"{key_prefix}_monthly"] = 0.0
+        st.session_state[f"{key_prefix}_annual"] = 0.0
+        st.session_state[f"{key_prefix}_last_modified"] = None
+
+    def update_values(source, value):
+        if source == "daily":
+            st.session_state[f"{key_prefix}_monthly"] = value * 30
+            st.session_state[f"{key_prefix}_annual"] = value * 365
+        elif source == "monthly":
+            st.session_state[f"{key_prefix}_daily"] = value / 30
+            st.session_state[f"{key_prefix}_annual"] = value * 12
+        elif source == "annual":
+            st.session_state[f"{key_prefix}_daily"] = value / 365
+            st.session_state[f"{key_prefix}_monthly"] = value / 12
+        st.session_state[f"{key_prefix}_last_modified"] = source
+
+    # Daily input
+    daily = col1.number_input("Daily", min_value=0.0, step=0.01, key=f"{key_prefix}_daily_input", value=st.session_state[f"{key_prefix}_daily"])
+    if st.session_state[f"{key_prefix}_last_modified"] != "daily":
+        update_values("daily", daily)
+        st.session_state[f"{key_prefix}_daily"] = daily
+
+    # Monthly input
+    monthly = col2.number_input("Monthly", min_value=0.0, step=0.01, key=f"{key_prefix}_monthly_input", value=st.session_state[f"{key_prefix}_monthly"])
+    if st.session_state[f"{key_prefix}_last_modified"] != "monthly":
+        update_values("monthly", monthly)
+        st.session_state[f"{key_prefix}_monthly"] = monthly
+
+    # Annual input
+    annual = col3.number_input("Annual", min_value=0.0, step=0.01, key=f"{key_prefix}_annual_input", value=st.session_state[f"{key_prefix}_annual"])
+    if st.session_state[f"{key_prefix}_last_modified"] != "annual":
+        update_values("annual", annual)
+        st.session_state[f"{key_prefix}_annual"] = annual
+
+    return st.session_state[f"{key_prefix}_monthly"]
+
+feed_monthly = cost_block("Feed Cost", "feed")
+labor_monthly = cost_block("Labor Cost", "labor")
+utilities_monthly = cost_block("Utilities", "utilities")
+misc_monthly = cost_block("Misc Per-Horse Cost", "misc")
 
 # --- Company Expenses ---
 st.header("💰 Company Expenses")
@@ -145,7 +189,7 @@ col2.metric("Annual Total", f"${total_annual_company_expense:,.2f}")
 # --- Calculations ---
 monthly_income = monthly_occupancy_revenue + monthly_additional_revenue
 monthly_cost = (
-    (feed + labor + utilities + misc) * total_horses +
+    (feed_monthly + labor_monthly + utilities_monthly + misc_monthly) * total_horses +
     (total_quarterly_property_expense + total_quarterly_company_expense) / 3
 )
 monthly_profit = monthly_income - monthly_cost
