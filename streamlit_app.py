@@ -45,25 +45,55 @@ st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
 # --- Occupancy Inputs ---
 st.header("🏠 Occupancy")
 total_stalls = st.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
-fullboard_training = st.number_input("Fullboard Training", min_value=0, step=1, key="fullboard_training")
-general_boarding = st.number_input("General Boarding", min_value=0, step=1, key="general_boarding")
-personal_horses = st.number_input("Personal Horses", min_value=0, step=1, key="personal_horses")
-horse_hotel = st.number_input("Horse Hotel", min_value=0, step=1, key="horse_hotel")
-retirement_horse = st.number_input("Retirement Horse", min_value=0, step=1, key="retirement_horse")
-school_horse = st.number_input("School Horse", min_value=0, step=1, key="school_horse")
+
+col1, col2 = st.columns([1, 1])
+fullboard_training = col1.number_input("Fullboard Training", min_value=0, step=1, key="fullboard_training")
+fullboard_training_price = col2.number_input("Price", min_value=0.0, step=10.0, key="fullboard_training_price")
+
+col1, col2 = st.columns([1, 1])
+general_boarding = col1.number_input("General Boarding", min_value=0, step=1, key="general_boarding")
+general_boarding_price = col2.number_input("Price", min_value=0.0, step=10.0, key="general_boarding_price")
+
+col1, col2 = st.columns([1, 1])
+personal_horses = col1.number_input("Personal Horses", min_value=0, step=1, key="personal_horses")
+personal_horses_price = col2.number_input("Price", min_value=0.0, step=10.0, key="personal_horses_price")
+
+col1, col2 = st.columns([1, 1])
+horse_hotel = col1.number_input("Horse Hotel", min_value=0, step=1, key="horse_hotel")
+horse_hotel_price = col2.number_input("Price", min_value=0.0, step=10.0, key="horse_hotel_price")
+
+col1, col2 = st.columns([1, 1])
+retirement_horse = col1.number_input("Retirement Horse", min_value=0, step=1, key="retirement_horse")
+retirement_horse_price = col2.number_input("Price", min_value=0.0, step=10.0, key="retirement_horse_price")
+
+col1, col2 = st.columns([1, 1])
+school_horse = col1.number_input("School Horse", min_value=0, step=1, key="school_horse")
+school_horse_price = col2.number_input("Price", min_value=0.0, step=10.0, key="school_horse_price")
 
 # Occupancy Calculations
 total_horses = fullboard_training + general_boarding + personal_horses + horse_hotel + retirement_horse + school_horse
 remaining_stalls = total_stalls - total_horses
+monthly_occupancy_revenue = (
+    fullboard_training * fullboard_training_price +
+    general_boarding * general_boarding_price +
+    personal_horses * personal_horses_price +
+    horse_hotel * horse_hotel_price +
+    retirement_horse * retirement_horse_price +
+    school_horse * school_horse_price
+)
+quarterly_occupancy_revenue = monthly_occupancy_revenue * 3
+annual_occupancy_revenue = monthly_occupancy_revenue * 12
 
 st.subheader("📊 Occupancy Summary")
 col1, col2 = st.columns(2)
 col1.metric("Total Horses", f"{total_horses}")
 col2.metric("Remaining Stalls", f"{remaining_stalls}")
+col1.metric("Quarterly Total Revenue", f"${quarterly_occupancy_revenue:,.2f}")
+col2.metric("Annual Total Revenue", f"${annual_occupancy_revenue:,.2f}")
 
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
-basic_boarding = st.number_input("Basic Boarding Price", min_value=0.0, step=10.0)
+# No inputs here as pricing is now handled in Occupancy section
 
 # --- Cost Inputs ---
 st.header("🐎 Per-Horse Monthly Costs")
@@ -73,7 +103,7 @@ utilities = st.number_input("Utilities", min_value=0.0, step=10.0)
 misc = st.number_input("Misc Per-Horse Cost", min_value=0.0, step=10.0)
 
 # --- Calculations ---
-monthly_income = basic_boarding * total_horses
+monthly_income = monthly_occupancy_revenue
 monthly_cost = (feed + labor + utilities + misc) * total_horses
 monthly_profit = monthly_income - monthly_cost
 current_quarter = monthly_profit * 3
