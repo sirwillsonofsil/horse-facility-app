@@ -223,9 +223,9 @@ col2.metric("Projected Annual Profit", f"€{projected_annual:,.2f}")
 st.subheader("📝 Enter Manual Results for Quarters 1–4")
 col1, col2, col3, col4 = st.columns(4)
 manual_q1 = col1.number_input("Quarter 1 Profit", min_value=0.0, step=100.0)
-manual_q2 = col2.number_input("Quarter 2 Profit", min_value=0.0, step=100.0)
-manual_q3 = col3.number_input("Quarter 3 Profit", min_value=0.0, step=100.0)
-manual_q4 = col4.number_input("Quarter 4 Profit", min_value=0.0, step=100.0)
+manual_q2 = col1.number_input("Quarter 2 Profit", min_value=0.0, step=100.0)
+manual_q3 = col1.number_input("Quarter 3 Profit", min_value=0.0, step=100.0)
+manual_q4 = col1.number_input("Quarter 4 Profit", min_value=0.0, step=100.0)
 
 # --- 4/4 Calculation ---
 four_quarter_total = manual_q1 + manual_q2 + manual_q3 + manual_q4
