@@ -49,11 +49,15 @@ st.metric(label="📈 Current Quarter", value=f"${current_quarter:,.2f}")
 
 # --- Manual Entry for Quarters 1–4 ---
 st.subheader("📝 Enter Manual Results for Quarters 1–4")
-col1, col2, col3, c
-
+col1, col2, col3, col4 = st.columns(4)
 
 manual_q1 = col1.number_input("Quarter 1", step=100.0)
 manual_q2 = col2.number_input("Quarter 2", step=100.0)
-manual_q3 = col3.number_input("Quarter 3", step=100.0
+manual_q3 = col3.number_input("Quarter 3", step=100.0)
+manual_q4 = col4.number_input("Quarter 4", step=100.0)
 
+# --- Year-End Summary ---
+year_end_total = current_quarter + manual_q1 + manual_q2 + manual_q3 + manual_q4
 
+st.subheader("📅 Year-End Summary")
+st.metric(label="📊 Total of All Quarters", value=f"${year_end_total:,.2f}")
