@@ -59,14 +59,16 @@ monthly_income = basic_boarding * horses_boarded
 monthly_cost = (feed + labor + utilities + misc) * horses_boarded
 monthly_profit = monthly_income - monthly_cost
 current_quarter = monthly_profit * 3
-annual_profit = monthly_profit * 12
+projected_annual = monthly_profit * 12
 
 # --- Quarterly Results & Year-End Summary ---
 st.header("📊 Quarterly Results & Year-End Summary")
 
-# --- Current Quarter ---
-st.subheader("🟢 Projected Quarter (Auto-Calculated)")
-st.metric("Projected Quarter Profit", f"${current_quarter:,.2f}")
+# --- Projected Quarter and Annual ---
+st.subheader("🟢 Projected Results (Auto-Calculated)")
+col1, col2 = st.columns(2)
+col1.metric("Projected Quarter Profit", f"${current_quarter:,.2f}")
+col2.metric("Projected Annual Profit", f"${projected_annual:,.2f}")
 
 # --- Manual Quarterly Inputs ---
 st.subheader("📝 Enter Manual Results for Quarters 1–4")
@@ -76,13 +78,7 @@ manual_q2 = col2.number_input("Quarter 2 Profit", min_value=0.0, step=100.0)
 manual_q3 = col3.number_input("Quarter 3 Profit", min_value=0.0, step=100.0)
 manual_q4 = col4.number_input("Quarter 4 Profit", min_value=0.0, step=100.0)
 
-# --- Year-End Summary ---
-year_end_profit = manual_q1 + manual_q2 + manual_q3 + manual_q4
-annual_facility_expenses = total_quarterly_facility_expense * 4
-year_end_net_profit = year_end_profit - annual_facility_expenses
-
-st.subheader("📅 Year-End Summary")
-st.metric("Total Revenue (Annual)", f"${monthly_income * 12:,.2f}")
-st.metric("Total Per-Horse Costs (Annual)", f"${monthly_cost * 12:,.2f}")
-st.metric("Total Facility Expenses (Annual)", f"${annual_facility_expenses:,.2f}")
-st.metric("Total Profit (All Quarters, After Facility Expenses)", f"${year_end_net_profit:,.2f}")
+# --- 4/4 Calculation ---
+four_quarter_total = manual_q1 + manual_q2 + manual_q3 + manual_q4
+st.subheader("📅 4/4 Calculation")
+st.metric("Total of Manual Quarters", f"${four_quarter_total:,.2f}")
