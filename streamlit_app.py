@@ -48,38 +48,33 @@ total_stalls = st.number_input("Total Stalls", min_value=0, step=1, key="total_s
 
 col1, col2 = st.columns([1, 1])
 fullboard_training = col1.number_input("Fullboard Training", min_value=0, step=1, key="fullboard_training")
-fullboard_training_price = col2.number_input("Price", min_value=0.0, step=10.0, key="fullboard_training_price")
+fullboard_training_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="fullboard_training_price")
 
 col1, col2 = st.columns([1, 1])
-general_boarding = col1.number_input("General Boarding", min_value=0, step=1, key="general_boarding")
-general_boarding_price = col2.number_input("Price", min_value=0.0, step=10.0, key="general_boarding_price")
+half_board = col1.number_input("Half Board", min_value=0, step=1, key="half_board")
+half_board_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="half_board_price")
 
 col1, col2 = st.columns([1, 1])
-personal_horses = col1.number_input("Personal Horses", min_value=0, step=1, key="personal_horses")
-personal_horses_price = col2.number_input("Price", min_value=0.0, step=10.0, key="personal_horses_price")
+company_horses = col1.number_input("Company Horses", min_value=0, step=1, key="company_horses")
+company_horses_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="company_horses_price")
 
 col1, col2 = st.columns([1, 1])
 horse_hotel = col1.number_input("Horse Hotel", min_value=0, step=1, key="horse_hotel")
-horse_hotel_price = col2.number_input("Price", min_value=0.0, step=10.0, key="horse_hotel_price")
+horse_hotel_price = col2.number_input("Price (Per Night)", min_value=0.0, step=10.0, key="horse_hotel_price")
 
 col1, col2 = st.columns([1, 1])
-retirement_horse = col1.number_input("Retirement Horse", min_value=0, step=1, key="retirement_horse")
-retirement_horse_price = col2.number_input("Price", min_value=0.0, step=10.0, key="retirement_horse_price")
-
-col1, col2 = st.columns([1, 1])
-school_horse = col1.number_input("School Horse", min_value=0, step=1, key="school_horse")
-school_horse_price = col2.number_input("Price", min_value=0.0, step=10.0, key="school_horse_price")
+retirement_recovery_horse = col1.number_input("Retirement/Recovery Horse", min_value=0, step=1, key="retirement_recovery_horse")
+retirement_recovery_horse_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="retirement_recovery_horse_price")
 
 # Occupancy Calculations
-total_horses = fullboard_training + general_boarding + personal_horses + horse_hotel + retirement_horse + school_horse
+total_horses = fullboard_training + half_board + company_horses + horse_hotel + retirement_recovery_horse
 remaining_stalls = total_stalls - total_horses
 monthly_occupancy_revenue = (
     fullboard_training * fullboard_training_price +
-    general_boarding * general_boarding_price +
-    personal_horses * personal_horses_price +
-    horse_hotel * horse_hotel_price +
-    retirement_horse * retirement_horse_price +
-    school_horse * school_horse_price
+    half_board * half_board_price +
+    company_horses * company_horses_price +
+    horse_hotel * horse_hotel_price * 30 +  # Assuming 30 days per month for nightly rate
+    retirement_recovery_horse * retirement_recovery_horse_price
 )
 quarterly_occupancy_revenue = monthly_occupancy_revenue * 3
 annual_occupancy_revenue = monthly_occupancy_revenue * 12
