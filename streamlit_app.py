@@ -5,14 +5,14 @@ st.set_page_config(page_title="Horse Facility Dashboard", layout="wide")
 st.title("🐴 Horse Facility Profitability Dashboard")
 
 # --- Facility Inputs ---
-st.header("🏢 Facility Expenses (Standardized to Quarterly)")
+st.header("🏢 Facility")
 
-def expense_row(label, key_prefix):
-    mode = st.selectbox(
-        f"{label} - Input Mode", ["Annual", "Quarterly", "Monthly"],
-        key=f"{key_prefix}_mode"
-    )
-    value = st.number_input(f"{label} - Value", step=100.0, key=f"{key_prefix}_value")
+def expense_block(label, key_prefix):
+    st.subheader(label)
+
+    col1, col2 = st.columns([1, 2])
+    mode = col1.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key=f"{key_prefix}_mode")
+    value = col2.number_input("Value", step=100.0, key=f"{key_prefix}_value")
 
     if mode == "Annual":
         quarterly = value / 4
@@ -21,18 +21,18 @@ def expense_row(label, key_prefix):
     else:
         quarterly = value
 
-    st.markdown(f"**{label} (Quarterly Equivalent):** ${quarterly:,.2f}")
+    st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
     return quarterly
 
-# Individual rows
-q_insurance = expense_row("Property Insurance", "insurance")
-q_rent = expense_row("Property Rent", "rent")
-q_electric = expense_row("General Electric", "electric")
-q_water = expense_row("General Water", "water")
-q_maintenance = expense_row("Maintenance", "maintenance")
-q_misc = expense_row("Miscellaneous", "misc")
+# Render each block
+q_insurance = expense_block("Property Insurance", "insurance")
+q_rent = expense_block("Property Rent", "rent")
+q_electric = expense_block("General Electric", "electric")
+q_water = expense_block("General Water", "water")
+q_maintenance = expense_block("Maintenance", "maintenance")
+q_misc = expense_block("Miscellaneous", "misc")
 
-# Final total
+# Grand Total
 total_quarterly_facility_expense = q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
 st.subheader("🏁 Total Facility Expenses (Quarterly)")
 st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
