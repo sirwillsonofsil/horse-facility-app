@@ -7,6 +7,7 @@ st.title("🐴 Horse Facility Profitability Dashboard")
 # --- Facility Inputs ---
 st.header("🏢 Facility")
 
+# Standard input block for expenses with selectable input mode
 def expense_block(label, key_prefix):
     st.subheader(label)
 
@@ -14,28 +15,6 @@ def expense_block(label, key_prefix):
     mode = col1.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key=f"{key_prefix}_mode")
     value = col2.number_input("Value", step=100.0, key=f"{key_prefix}_value")
 
-    if mode == "Annual":
-        quarterly = value / 4
-    elif mode == "Monthly":
-        quarterly = value * 3
-    else:
-        quarterly = value
-
-    st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
-    return quarterly
-
-# Render each block
-q_insurance = expense_block("Property Insurance", "insurance")
-q_rent = expense_block("Property Rent", "rent")
-q_electric = expense_block("General Electric", "electric")
-q_water = expense_block("General Water", "water")
-q_maintenance = expense_block("Maintenance", "maintenance")
-q_misc = expense_block("Miscellaneous", "misc")
-
-# Grand Total
-total_quarterly_facility_expense = q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
-st.subheader("🏁 Total Facility Expenses (Quarterly)")
-st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
 
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
