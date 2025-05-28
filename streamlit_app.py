@@ -35,6 +35,18 @@ monthly_cost = (feed + labor + utilities + misc) * horses_boarded
 monthly_profit = monthly_income - monthly_cost
 annual_profit = monthly_profit * 12
 
-st.header("📊 Results")
-st.metric("Monthly Profit", f"${monthly_profit:,.2f}")
-st.metric("Annual Profit", f"${annual_profit:,.2f}")
+st.header("📊 Results & Profit Dashboard")
+
+# --- Output Layout ---
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("💰 Monthly Revenue", f"${monthly_income:,.2f}")
+
+with col2:
+    st.metric("📉 Monthly Costs", f"${monthly_cost:,.2f}")
+
+with col3:
+    st.metric("📈 Monthly Profit", f"${monthly_profit:,.2f}")
+
+st.metric("📆 Annual Profit Projection", f"${annual_profit:,.2f}")
