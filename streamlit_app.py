@@ -74,33 +74,27 @@ col2.metric("Annual Total Revenue", f"${annual_occupancy_revenue:,.2f}")
 st.header("💵 Revenue")
 
 col1, col2 = st.columns([1, 1])
-st.subheader("Ivanka Private Lessons")
-ivanka_private_count = col1.number_input("Sessions Per Month", min_value=0, step=1, key="ivanka_private_count")
+ivanka_private_count = col1.number_input("Ivanka Private Lessons", min_value=0, step=1, key="ivanka_private_count")
 ivanka_private_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_private_price")
 
 col1, col2 = st.columns([1, 1])
-st.subheader("Ivanka Group Lessons")
-ivanka_group_count = col1.number_input("Sessions Per Month", min_value=0, step=1, key="ivanka_group_count")
+ivanka_group_count = col1.number_input("Ivanka Group Lessons", min_value=0, step=1, key="ivanka_group_count")
 ivanka_group_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_group_price")
 
 col1, col2 = st.columns([1, 1])
-st.subheader("Kerry Mobile Sessions")
-kerry_mobile_count = col1.number_input("Sessions Per Month", min_value=0, step=1, key="kerry_mobile_count")
+kerry_mobile_count = col1.number_input("Kerry Mobile Sessions", min_value=0, step=1, key="kerry_mobile_count")
 kerry_mobile_price = col2.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="kerry_mobile_price")
 
 col1, col2 = st.columns([1, 1])
-st.subheader("Parcore Guests")
-parcore_guests_count = col1.number_input("Guests Per Month", min_value=0, step=1, key="parcore_guests_count")
+parcore_guests_count = col1.number_input("Parcore Guests", min_value=0, step=1, key="parcore_guests_count")
 parcore_guests_price = col2.number_input("Price (Per Guest)", min_value=0.0, step=10.0, key="parcore_guests_price")
 
 col1, col2 = st.columns([1, 1])
-st.subheader("Horse Hotel Guests")
-horse_hotel_count = col1.number_input("Nights Per Month", min_value=0, step=1, key="horse_hotel_count")
+horse_hotel_count = col1.number_input("Horse Hotel Guests", min_value=0, step=1, key="horse_hotel_count")
 horse_hotel_price = col2.number_input("Price (Per Night)", min_value=0.0, step=10.0, key="horse_hotel_price")
 
 col1, col2 = st.columns([1, 1])
-st.subheader("Led Rides")
-led_rides_count = col1.number_input("Rides Per Month", min_value=0, step=1, key="led_rides_count")
+led_rides_count = col1.number_input("Led Rides", min_value=0, step=1, key="led_rides_count")
 led_rides_price = col2.number_input("Price (Per Ride)", min_value=0.0, step=10.0, key="led_rides_price")
 
 # Revenue Calculations
@@ -115,10 +109,10 @@ monthly_additional_revenue = (
 quarterly_additional_revenue = monthly_additional_revenue * 3
 annual_additional_revenue = monthly_additional_revenue * 12
 
-st.subheader("🏁 Total Additional Revenue")
+st.subheader("📊 Revenue Summary")
 col1, col2 = st.columns(2)
-col1.metric("Quarterly Total", f"${quarterly_additional_revenue:,.2f}")
-col2.metric("Annual Total", f"${annual_additional_revenue:,.2f}")
+col1.metric("Quarterly Total Revenue", f"${quarterly_additional_revenue:,.2f}")
+col2.metric("Annual Total Revenue", f"${annual_additional_revenue:,.2f}")
 
 # --- Cost Inputs ---
 st.header("🐎 Per-Horse Monthly Costs")
