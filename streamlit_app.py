@@ -49,7 +49,8 @@ st.metric(label="📈 Current Quarter", value=f"${current_quarter:,.2f}")
 
 # --- Manual Entry for Quarters 1–4 ---
 st.subheader("📝 Enter Manual Results for Quarters 1–4")
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, c
+
 
 manual_q1 = col1.number_input("Quarter 1", step=100.0)
 manual_q2 = col2.number_input("Quarter 2", step=100.0)
