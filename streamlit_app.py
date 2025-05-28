@@ -57,7 +57,7 @@ manual_q3 = col3.number_input("Quarter 3", step=100.0)
 manual_q4 = col4.number_input("Quarter 4", step=100.0)
 
 # --- Year-End Summary ---
-year_end_total = current_quarter + manual_q1 + manual_q2 + manual_q3 + manual_q4
+year_end_total = manual_q1 + manual_q2 + manual_q3 + manual_q4
 
 st.subheader("📅 Year-End Summary")
 st.metric(label="📊 Total of All Quarters", value=f"${year_end_total:,.2f}")
