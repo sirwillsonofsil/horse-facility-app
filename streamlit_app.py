@@ -3,6 +3,10 @@ import streamlit as st
 st.set_page_config(page_title="Gelbstein Ranch Profitability Dashboard", layout="wide")
 st.title("🌵 Gelbstein Ranch Profitability Dashboard 🌵")
 
+# Initialize revenue variables to prevent NameError
+monthly_occupancy_revenue = 0.0
+monthly_additional_revenue = 0.0
+
 # --- Property Expenses Inputs ---
 st.header("🏠 Property Expenses")
 
@@ -191,4 +195,33 @@ col1.metric("Quarterly Total", f"€{total_quarterly_company_expense:,.2f}")
 col2.metric("Annual Total", f"€{total_annual_company_expense:,.2f}")
 
 # --- Calculations ---
-monthly_income
+monthly_income = monthly_occupancy_revenue + monthly_additional_revenue
+monthly_cost = (
+    total_monthly_cost +  # Already includes total_horses multiplication
+    (total_quarterly_property_expense + total_quarterly_company_expense) / 3
+)
+monthly_profit = monthly_income - monthly_cost
+current_quarter = monthly_profit * 3
+projected_annual = monthly_profit * 12
+
+# --- Quarterly Results & Year-End Summary ---
+st.header("📊 Quarterly Results & Year-End Summary")
+
+# --- Projected Quarter and Annual ---
+st.subheader("🟢 Projected Results (Auto-Calculated)")
+col1, col2 = st.columns(2)
+col1.metric("Projected Quarter Profit", f"€{current_quarter:,.2f}")
+col2.metric("Projected Annual Profit", f"€{projected_annual:,.2f}")
+
+# --- Manual Quarterly Inputs ---
+st.subheader("📝 Enter Manual Results for Quarters 1–4")
+col1, col2, col3, col4 = st.columns(4)
+manual_q1 = col1.number_input("Quarter 1 Profit", min_value=0.0, step=100.0)
+manual_q2 = col2.number_input("Quarter 2 Profit", min_value=0.0, step=100.0)
+manual_q3 = col3.number_input("Quarter 3 Profit", min_value=0.0, step=100.0)
+manual_q4 = col4.number_input("Quarter 4 Profit", min_value=0.0, step=100.0)
+
+# --- 4/4 Calculation ---
+four_quarter_total = manual_q1 + manual_q2 + manual_q3 + manual_q4
+st.subheader("📅 4/4 Calculation")
+st.metric("Total of Manual Quarters", f"€{four_quarter_total:,.2f}")
