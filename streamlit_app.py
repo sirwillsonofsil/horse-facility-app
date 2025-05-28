@@ -72,14 +72,48 @@ col2.metric("Annual Total Revenue", f"${annual_occupancy_revenue:,.2f}")
 
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
-# No inputs here as pricing is now handled in Occupancy section
+
+st.subheader("Ivanka Private Lessons")
+ivanka_private_price = st.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_private_price")
+
+st.subheader("Ivanka Group Lessons")
+ivanka_group_price = st.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="ivanka_group_price")
+
+st.subheader("Kerry Mobile Sessions")
+kerry_mobile_price = st.number_input("Price (Per Session)", min_value=0.0, step=10.0, key="kerry_mobile_price")
+
+st.subheader("Parcore Guests")
+parcore_guests_price = st.number_input("Price (Per Guest)", min_value=0.0, step=10.0, key="parcore_guests_price")
+
+st.subheader("Horse Hotel Guests")
+horse_hotel_price = st.number_input("Price (Per Night)", min_value=0.0, step=10.0, key="horse_hotel_price")
+
+st.subheader("Led Rides")
+led_rides_price = st.number_input("Price (Per Ride)", min_value=0.0, step=10.0, key="led_rides_price")
+
+# Revenue Calculations
+monthly_additional_revenue = (
+    ivanka_private_price +
+    ivanka_group_price +
+    kerry_mobile_price +
+    parcore_guests_price +
+    horse_hotel_price +
+    led_rides_price
+)
+quarterly_additional_revenue = monthly_additional_revenue * 3
+annual_additional_revenue = monthly_additional_revenue * 12
+
+st.subheader("🏁 Total Additional Revenue")
+col1, col2 = st.columns(2)
+col1.metric("Quarterly Total", f"${quarterly_additional_revenue:,.2f}")
+col2.metric("Annual Total", f"${annual_additional_revenue:,.2f}")
 
 # --- Cost Inputs ---
 st.header("🐎 Per-Horse Monthly Costs")
 feed = st.number_input("Feed Cost", min_value=0.0, step=10.0)
 labor = st.number_input("Labor Cost", min_value=0.0, step=10.0)
-utilities = st.number_input("Utilities", min_value=0.0, step=0.0)
-misc = st.number_input("Misc Per-Horse Cost", min_value=0.0, step=0.0)
+utilities = st.number_input("Utilities", min_value=0.0, step=10.0)
+misc = st.number_input("Misc Per-Horse Monthly Cost", min_value=0.0, step=10.0)
 
 # --- Company Expenses ---
 st.header("💰 Company Expenses")
@@ -103,7 +137,7 @@ col1.metric("Quarterly Total", f"${total_quarterly_company_expense:,.2f}")
 col2.metric("Annual Total", f"${total_annual_company_expense:,.2f}")
 
 # --- Calculations ---
-monthly_income = monthly_occupancy_revenue
+monthly_income = monthly_occupancy_revenue + monthly_additional_revenue
 monthly_cost = (
     (feed + labor + utilities + misc) * total_horses +
     (total_quarterly_property_expense + total_quarterly_company_expense) / 3
