@@ -1,7 +1,7 @@
 import streamlit as st
 
-st.set_page_config(page_title="Horse Facility Dashboard", layout="wide")
-st.title("🐴 Horse Facility Profitability Dashboard")
+st.set_page_config(page_title="Gelbstein Ranch Profitability Dashboard", layout="wide")
+st.title("🌵 Gelbstein Ranch Profitability Dashboard 🌵")
 
 # --- Property Inputs ---
 st.header("🏠 Property")  # Using 🏠 with red styling in UI for red barn
@@ -32,7 +32,7 @@ col1.metric("Quarterly Total", f"${total_quarterly_property_expense:,.2f}")
 col2.metric("Annual Total", f"${total_annual_property_expense:,.2f}")
 
 # --- Occupancy Inputs ---
-st.header("🏠 Occupancy")
+st.header("🐎 Occupancy")
 total_stalls = st.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
 
 col1, col2 = st.columns([1, 1])
@@ -78,11 +78,11 @@ st.header("💵 Revenue")
 st.header("🐎 Per-Horse Monthly Costs")
 feed = st.number_input("Feed Cost", min_value=0.0, step=10.0)
 labor = st.number_input("Labor Cost", min_value=0.0, step=10.0)
-utilities = st.number_input("Utilities", min_value=0.0, step=10.0)
-misc = st.number_input("Misc Per-Horse Monthly Cost", min_value=0.0, step=10.0)
+utilities = st.number_input("Utilities", min_value=0.0, step=0.0)
+misc = st.number_input("Misc Per-Horse Cost", min_value=0.0, step=0.0)
 
 # --- Company Expenses ---
-st.header("🏢 Company Expenses")
+st.header("💰 Company Expenses")
 
 def annual_expense_block(label, key_prefix):
     col1, col2 = st.columns([1.5, 2])
