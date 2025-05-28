@@ -37,10 +37,13 @@ col2.metric("Annual Total", f"€{total_annual_property_expense:,.2f}")
 
 # --- Occupancy Inputs ---
 st.header("🐎 Occupancy")
-col1, col2, col3 = st.columns([1, 1, 1])
+col1, col2 = st.columns([1, 1])
 total_stalls = col1.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
 company_horses = col2.number_input("Company Horses", min_value=0, step=1, key="company_horses")
-open_barn_horses = col3.number_input("Open Barn Horses", min_value=0, step=1, key="open_barn_horses")
+
+col1, col2 = st.columns([1, 1])
+open_barn_horses = col1.number_input("Open Barn Horses", min_value=0, step=1, key="open_barn_horses")
+open_barn_horses_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="open_barn_horses_price")
 
 col1, col2 = st.columns([1, 1])
 fullboard_training = col1.number_input("Fullboard Training", min_value=0, step=1, key="fullboard_training")
@@ -60,8 +63,9 @@ remaining_stalls = total_stalls - (fullboard_training + half_board + company_hor
 monthly_occupancy_revenue = (
     fullboard_training * fullboard_training_price +
     half_board * half_board_price +
-    retirement_recovery_horse * retirement_recovery_horse_price
-)  # No revenue from Company Horses or Open Barn Horses
+    retirement_recovery_horse * retirement_recovery_horse_price +
+    open_barn_horses * open_barn_horses_price
+)
 quarterly_occupancy_revenue = monthly_occupancy_revenue * 3
 annual_occupancy_revenue = monthly_occupancy_revenue * 12
 
