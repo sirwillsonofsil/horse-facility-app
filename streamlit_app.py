@@ -58,22 +58,23 @@ col1, col2 = st.columns([1, 1])
 company_horses = col1.number_input("Company Horses", min_value=0, step=1, key="company_horses")
 company_horses_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="company_horses_price")
 
-col1, col2 = st.columns([1, 1])
+col1, col2, col3 = st.columns([1, 1, 1])
 horse_hotel = col1.number_input("Horse Hotel", min_value=0, step=1, key="horse_hotel")
 horse_hotel_price = col2.number_input("Price (Per Night)", min_value=0.0, step=10.0, key="horse_hotel_price")
+horse_hotel_nights = col3.number_input("Number of Nights", min_value=0, step=1, key="horse_hotel_nights")
 
 col1, col2 = st.columns([1, 1])
 retirement_recovery_horse = col1.number_input("Retirement/Recovery Horse", min_value=0, step=1, key="retirement_recovery_horse")
 retirement_recovery_horse_price = col2.number_input("Price (Per Month)", min_value=0.0, step=10.0, key="retirement_recovery_horse_price")
 
 # Occupancy Calculations
-total_horses = fullboard_training + half_board + company_horses + horse_hotel + retirement_recovery_horse
+total_horses = fullboard_training + half_board + company_horses + retirement_recovery_horse
 remaining_stalls = total_stalls - total_horses
 monthly_occupancy_revenue = (
     fullboard_training * fullboard_training_price +
     half_board * half_board_price +
     company_horses * company_horses_price +
-    horse_hotel * horse_hotel_price * 30 +  # Assuming 30 days per month for nightly rate
+    horse_hotel * horse_hotel_price * horse_hotel_nights +
     retirement_recovery_horse * retirement_recovery_horse_price
 )
 quarterly_occupancy_revenue = monthly_occupancy_revenue * 3
@@ -82,7 +83,7 @@ annual_occupancy_revenue = monthly_occupancy_revenue * 12
 st.subheader("📊 Occupancy Summary")
 col1, col2 = st.columns(2)
 col1.metric("Total Horses", f"{total_horses}")
-col2.metric("Remaining Stalls", f"{remaining_stalls}")
+col2.metric("Remaining Stalls", f"{remaining_stalls} (-{horse_hotel})")
 col1.metric("Quarterly Total Revenue", f"${quarterly_occupancy_revenue:,.2f}")
 col2.metric("Annual Total Revenue", f"${annual_occupancy_revenue:,.2f}")
 
