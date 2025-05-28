@@ -42,10 +42,28 @@ total_quarterly_facility_expense = q_insurance + q_rent + q_electric + q_water +
 st.subheader("🏁 Total Facility Expenses (Quarterly)")
 st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
 
+# --- Occupancy Inputs ---
+st.header("🏠 Occupancy")
+total_stalls = st.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
+fullboard_training = st.number_input("Fullboard Training", min_value=0, step=1, key="fullboard_training")
+general_boarding = st.number_input("General Boarding", min_value=0, step=1, key="general_boarding")
+personal_horses = st.number_input("Personal Horses", min_value=0, step=1, key="personal_horses")
+horse_hotel = st.number_input("Horse Hotel", min_value=0, step=1, key="horse_hotel")
+retirement_horse = st.number_input("Retirement Horse", min_value=0, step=1, key="retirement_horse")
+school_horse = st.number_input("School Horse", min_value=0, step=1, key="school_horse")
+
+# Occupancy Calculations
+total_horses = fullboard_training + general_boarding + personal_horses + horse_hotel + retirement_horse + school_horse
+remaining_stalls = total_stalls - total_horses
+
+st.subheader("📊 Occupancy Summary")
+col1, col2 = st.columns(2)
+col1.metric("Total Horses", f"{total_horses}")
+col2.metric("Remaining Stalls", f"{remaining_stalls}")
+
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
 basic_boarding = st.number_input("Basic Boarding Price", min_value=0.0, step=10.0)
-horses_boarded = st.number_input("Number of Boarded Horses", min_value=0, step=1)
 
 # --- Cost Inputs ---
 st.header("🐎 Per-Horse Monthly Costs")
@@ -55,8 +73,8 @@ utilities = st.number_input("Utilities", min_value=0.0, step=10.0)
 misc = st.number_input("Misc Per-Horse Cost", min_value=0.0, step=10.0)
 
 # --- Calculations ---
-monthly_income = basic_boarding * horses_boarded
-monthly_cost = (feed + labor + utilities + misc) * horses_boarded
+monthly_income = basic_boarding * total_horses
+monthly_cost = (feed + labor + utilities + misc) * total_horses
 monthly_profit = monthly_income - monthly_cost
 current_quarter = monthly_profit * 3
 projected_annual = monthly_profit * 12
