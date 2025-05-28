@@ -5,50 +5,37 @@ st.set_page_config(page_title="Horse Facility Dashboard", layout="wide")
 st.title("🐴 Horse Facility Profitability Dashboard")
 
 # --- Facility Inputs ---
-st.header("🏢 Facility Expenses")
+st.header("🏢 Facility Expenses (Standardized to Quarterly)")
 
-# Input mode selector
-input_mode = st.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key="facility_input_mode")
+def expense_row(label, key_prefix):
+    mode = st.selectbox(
+        f"{label} - Input Mode", ["Annual", "Quarterly", "Monthly"],
+        key=f"{key_prefix}_mode"
+    )
+    value = st.number_input(f"{label} - Value", step=100.0, key=f"{key_prefix}_value")
 
-def convert_expense(label, key_suffix):
-    if input_mode == "Annual":
-        annual = st.number_input(f"{label} (Annual)", step=100.0, key=f"annual_{key_suffix}")
-        quarterly = annual / 4
-        monthly = annual / 12
-    elif input_mode == "Quarterly":
-        quarterly = st.number_input(f"{label} (Quarterly)", step=100.0, key=f"quarterly_{key_suffix}")
-        annual = quarterly * 4
-        monthly = annual / 12
-    else:  # Monthly
-        monthly = st.number_input(f"{label} (Monthly)", step=100.0, key=f"monthly_{key_suffix}")
-        annual = monthly * 12
-        quarterly = annual / 4
+    if mode == "Annual":
+        quarterly = value / 4
+    elif mode == "Monthly":
+        quarterly = value * 3
+    else:
+        quarterly = value
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric(f"{label} (Annual)", f"${annual:,.2f}")
-    col2.metric(f"{label} (Quarterly)", f"${quarterly:,.2f}")
-    col3.metric(f"{label} (Monthly)", f"${monthly:,.2f}")
-    return annual
+    st.markdown(f"**{label} (Quarterly Equivalent):** ${quarterly:,.2f}")
+    return quarterly
 
-# --- Expense Types ---
-insurance_annual = convert_expense("Property Insurance", "insurance")
-rent_annual = convert_expense("Property Rent", "rent")
-electric_annual = convert_expense("General Electric", "electric")
-water_annual = convert_expense("General Water", "water")
-maintenance_annual = convert_expense("Maintenance", "maintenance")
-misc_annual = convert_expense("Miscellaneous", "misc")
+# Individual rows
+q_insurance = expense_row("Property Insurance", "insurance")
+q_rent = expense_row("Property Rent", "rent")
+q_electric = expense_row("General Electric", "electric")
+q_water = expense_row("General Water", "water")
+q_maintenance = expense_row("Maintenance", "maintenance")
+q_misc = expense_row("Miscellaneous", "misc")
 
-# Total Facility Cost (optional summary)
-total_facility_expense_annual = sum([
-    insurance_annual,
-    rent_annual,
-    electric_annual,
-    water_annual,
-    maintenance_annual,
-    misc_annual
-])
-st.subheader("🏁 Total Facility Expenses")
-st.metric("Total Annual Facility Expenses", f"${total_facility_expense_annual:,.2f}")
+# Final total
+total_quarterly_facility_expense = q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
+st.subheader("🏁 Total Facility Expenses (Quarterly)")
+st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
 
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
