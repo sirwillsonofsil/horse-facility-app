@@ -4,13 +4,12 @@ st.set_page_config(page_title="Horse Facility Dashboard", layout="wide")
 st.title("🐴 Horse Facility Profitability Dashboard")
 
 # --- Facility Inputs ---
-st.header("🏢 Facility")
+st.header("🏞️ Facility")
 
 def expense_block(label, key_prefix):
-    st.markdown(f"### {label}")
-    col1, col2 = st.columns([1, 2])
-    mode = col1.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key=f"{key_prefix}_mode")
-    value = col2.number_input("Value", min_value=0.0, step=100.0, key=f"{key_prefix}_value")
+    col1, col2 = st.columns([1.5, 1])
+    value = col1.number_input(f"{label}", min_value=0.0, step=100.0, key=f"{key_prefix}_value")
+    mode = col2.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key=f"{key_prefix}_mode")
     if mode == "Annual":
         quarterly = value / 4
     elif mode == "Monthly":
