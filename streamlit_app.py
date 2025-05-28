@@ -3,8 +3,8 @@ import streamlit as st
 st.set_page_config(page_title="Horse Facility Dashboard", layout="wide")
 st.title("🐴 Horse Facility Profitability Dashboard")
 
-# --- Facility Inputs ---
-st.header("🏞️ Facility")
+# --- Property Inputs ---
+st.header("🏠 Property")  # Using 🏠 with red styling in UI for red barn
 
 def expense_block(label, key_prefix):
     col1, col2 = st.columns([1.5, 1])
@@ -16,30 +16,20 @@ def expense_block(label, key_prefix):
         quarterly = value * 3
     else:
         quarterly = value
-    st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
-    return quarterly
-
-def annual_expense_block(label, key_prefix):
-    st.markdown(f"### {label}")
-    col1, col2 = st.columns([1.5, 2])
-    value = col1.number_input("Annual Value", min_value=0.0, step=100.0, key=f"{key_prefix}_value")
-    description = col2.text_input("Description", key=f"{key_prefix}_description")
-    quarterly = value / 4
-    st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
-    if description:
-        st.markdown(f"📝 _Description: {description}_")
     return quarterly
 
 q_insurance = expense_block("Property Insurance", "insurance")
 q_rent = expense_block("Property Rent", "rent")
 q_electric = expense_block("General Electric", "electric")
 q_water = expense_block("General Water", "water")
-q_maintenance = annual_expense_block("Maintenance", "maintenance")
-q_misc = annual_expense_block("Miscellaneous", "misc")
 
-total_quarterly_facility_expense = q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
-st.subheader("🏁 Total Facility Expenses (Quarterly)")
-st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
+total_quarterly_property_expense = q_insurance + q_rent + q_electric + q_water
+total_annual_property_expense = total_quarterly_property_expense * 4
+
+st.subheader("🏁 Total Property Expenses")
+col1, col2 = st.columns(2)
+col1.metric("Quarterly Total", f"${total_quarterly_property_expense:,.2f}")
+col2.metric("Annual Total", f"${total_annual_property_expense:,.2f}")
 
 # --- Occupancy Inputs ---
 st.header("🏠 Occupancy")
@@ -91,9 +81,33 @@ labor = st.number_input("Labor Cost", min_value=0.0, step=10.0)
 utilities = st.number_input("Utilities", min_value=0.0, step=10.0)
 misc = st.number_input("Misc Per-Horse Monthly Cost", min_value=0.0, step=10.0)
 
+# --- Company Expenses ---
+st.header("🏢 Company Expenses")
+
+def annual_expense_block(label, key_prefix):
+    col1, col2 = st.columns([1.5, 2])
+    value = col1.number_input(f"{label}", min_value=0.0, step=100.0, key=f"{key_prefix}_value")
+    description = col2.text_input("Description", key=f"{key_prefix}_description")
+    quarterly = value / 4
+    return quarterly
+
+q_maintenance = annual_expense_block("Maintenance", "maintenance")
+q_misc = annual_expense_block("Miscellaneous", "misc")
+
+total_quarterly_company_expense = q_maintenance + q_misc
+total_annual_company_expense = total_quarterly_company_expense * 4
+
+st.subheader("🏁 Total Company Expenses")
+col1, col2 = st.columns(2)
+col1.metric("Quarterly Total", f"${total_quarterly_company_expense:,.2f}")
+col2.metric("Annual Total", f"${total_annual_company_expense:,.2f}")
+
 # --- Calculations ---
 monthly_income = monthly_occupancy_revenue
-monthly_cost = (feed + labor + utilities + misc) * total_horses
+monthly_cost = (
+    (feed + labor + utilities + misc) * total_horses +
+    (total_quarterly_property_expense + total_quarterly_company_expense) / 3
+)
 monthly_profit = monthly_income - monthly_cost
 current_quarter = monthly_profit * 3
 projected_annual = monthly_profit * 12
