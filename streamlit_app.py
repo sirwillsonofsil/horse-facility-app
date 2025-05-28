@@ -37,7 +37,8 @@ col2.metric("Annual Total", f"€{total_annual_property_expense:,.2f}")
 
 # --- Occupancy Inputs ---
 st.header("🐎 Occupancy")
-col1, col2 = st.columns([1, 1])
+# Adjusted spacing for readability (optional, revert to [1, 1] if preferred)
+col1, col2 = st.columns([1.5, 1.5])
 total_stalls = col1.number_input("Total Stalls", min_value=0, step=1, key="total_stalls")
 company_horses = col2.number_input("Company Horses", min_value=0, step=1, key="company_horses")
 
