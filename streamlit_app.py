@@ -15,6 +15,46 @@ def expense_block(label, key_prefix):
     mode = col1.selectbox("Input Mode", ["Annual", "Quarterly", "Monthly"], key=f"{key_prefix}_mode")
     value = col2.number_input("Value", step=100.0, key=f"{key_prefix}_value")
 
+    if mode == "Annual":
+        quarterly = value / 4
+    elif mode == "Monthly":
+        quarterly = value * 3
+    else:
+        quarterly = value
+
+    st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
+    return quarterly
+
+# Fixed annual input block with optional comment
+def annual_only_block(label, key_prefix):
+    st.subheader(label)
+    col1, col2 = st.columns([1.5, 2])
+    value = col1.number_input("Annual Value", step=100.0, key=f"{key_prefix}_value")
+    note = col2.text_input("Comment (optional)", key=f"{key_prefix}_note")
+    quarterly = value / 4
+    st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
+    if note:
+        st.markdown(f"📝 _Note: {note}_")
+    return quarterly
+
+# Expense categories with input mode
+q_insurance = expense_block("Property Insurance", "insurance")
+q_rent = expense_block("Property Rent", "rent")
+q_electric = expense_block("General Electric", "electric")
+q_water = expense_block("General Water", "water")
+
+# Fixed annual-only categories
+q_maintenance = annual_only_block("Maintenance", "maintenance")
+q_misc = annual_only_block("Miscellaneous", "misc")
+
+# Grand Total of all quarterly values
+total_quarterly_facility_expense = (
+    q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
+)
+st.subheader("🏁 Total Facility Expenses (Quarterly)")
+st.metric("Quarterly Total", f"${total_quarterly_facility_expense:,.2f}")
+
+
 
 # --- Revenue Inputs ---
 st.header("💵 Revenue")
