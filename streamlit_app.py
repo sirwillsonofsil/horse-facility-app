@@ -124,38 +124,28 @@ def cost_block(label, key_prefix):
     if f"{key_prefix}_daily" not in st.session_state:
         st.session_state[f"{key_prefix}_daily"] = 0.0
         st.session_state[f"{key_prefix}_monthly"] = 0.0
-        st.session_state[f"{key_prefix}_annual"] = 0.0
-        st.session_state[f"{key_prefix}_last_modified"] = None
+        st.session_state[f"{key_prefix}_yearly"] = 0.0
 
-    def update_values(source, value):
-        if source == "daily":
-            st.session_state[f"{key_prefix}_monthly"] = value * 30
-            st.session_state[f"{key_prefix}_annual"] = value * 365
-        elif source == "monthly":
-            st.session_state[f"{key_prefix}_daily"] = value / 30
-            st.session_state[f"{key_prefix}_annual"] = value * 12
-        elif source == "annual":
-            st.session_state[f"{key_prefix}_daily"] = value / 365
-            st.session_state[f"{key_prefix}_monthly"] = value / 12
-        st.session_state[f"{key_prefix}_last_modified"] = source
+    def update_from_daily():
+        st.session_state[f"{key_prefix}_monthly"] = st.session_state[f"{key_prefix}_daily"] * 30
+        st.session_state[f"{key_prefix}_yearly"] = st.session_state[f"{key_prefix}_daily"] * 365
+
+    def update_from_monthly():
+        st.session_state[f"{key_prefix}_daily"] = st.session_state[f"{key_prefix}_monthly"] / 30
+        st.session_state[f"{key_prefix}_yearly"] = st.session_state[f"{key_prefix}_monthly"] * 12
+
+    def update_from_yearly():
+        st.session_state[f"{key_prefix}_daily"] = st.session_state[f"{key_prefix}_yearly"] / 365
+        st.session_state[f"{key_prefix}_monthly"] = st.session_state[f"{key_prefix}_yearly"] / 12
 
     # Daily input
-    daily = col1.number_input("Daily", min_value=0.0, step=0.01, key=f"{key_prefix}_daily_input", value=st.session_state[f"{key_prefix}_daily"])
-    if st.session_state[f"{key_prefix}_last_modified"] != "daily":
-        update_values("daily", daily)
-        st.session_state[f"{key_prefix}_daily"] = daily
+    daily = col1.number_input("Daily", min_value=0.0, step=0.01, key=f"{key_prefix}_daily", value=st.session_state[f"{key_prefix}_daily"], on_change=update_from_daily)
 
     # Monthly input
-    monthly = col2.number_input("Monthly", min_value=0.0, step=0.01, key=f"{key_prefix}_monthly_input", value=st.session_state[f"{key_prefix}_monthly"])
-    if st.session_state[f"{key_prefix}_last_modified"] != "monthly":
-        update_values("monthly", monthly)
-        st.session_state[f"{key_prefix}_monthly"] = monthly
+    monthly = col2.number_input("Monthly", min_value=0.0, step=0.01, key=f"{key_prefix}_monthly", value=st.session_state[f"{key_prefix}_monthly"], on_change=update_from_monthly)
 
-    # Annual input
-    annual = col3.number_input("Annual", min_value=0.0, step=0.01, key=f"{key_prefix}_annual_input", value=st.session_state[f"{key_prefix}_annual"])
-    if st.session_state[f"{key_prefix}_last_modified"] != "annual":
-        update_values("annual", annual)
-        st.session_state[f"{key_prefix}_annual"] = annual
+    # Yearly input
+    yearly = col3.number_input("Yearly", min_value=0.0, step=0.01, key=f"{key_prefix}_yearly", value=st.session_state[f"{key_prefix}_yearly"], on_change=update_from_yearly)
 
     return st.session_state[f"{key_prefix}_monthly"]
 
@@ -169,7 +159,7 @@ waste_disposal_monthly = cost_block("Waste Disposal", "waste_disposal")
 total_per_horse_monthly_cost = feed_monthly + bedding_monthly + water_monthly + electricity_monthly + waste_disposal_monthly
 total_monthly_cost = total_per_horse_monthly_cost * total_horses
 total_quarterly_cost = total_monthly_cost * 3
-total_annual_cost = total_monthly_cost * 12
+total_yearly_cost = total_monthly_cost * 12
 
 st.subheader("📊 Total Per-Horse Cost Summary")
 col1, col2 = st.columns(2)
@@ -177,7 +167,7 @@ col1.metric("Number of Horses", f"{total_horses}")
 col2.metric("Total Per-Horse Monthly Cost", f"€{total_per_horse_monthly_cost:,.2f}")
 col1.metric("Total Monthly Cost", f"€{total_monthly_cost:,.2f}")
 col2.metric("Total Quarterly Cost", f"€{total_quarterly_cost:,.2f}")
-col1.metric("Total Annual Cost", f"€{total_annual_cost:,.2f}")
+col1.metric("Total Yearly Cost", f"€{total_yearly_cost:,.2f}")
 
 # --- Company Expenses ---
 st.header("💰 Company Expenses")
@@ -201,33 +191,4 @@ col1.metric("Quarterly Total", f"€{total_quarterly_company_expense:,.2f}")
 col2.metric("Annual Total", f"€{total_annual_company_expense:,.2f}")
 
 # --- Calculations ---
-monthly_income = monthly_occupancy_revenue + monthly_additional_revenue
-monthly_cost = (
-    total_monthly_cost +  # Already includes total_horses multiplication
-    (total_quarterly_property_expense + total_quarterly_company_expense) / 3
-)
-monthly_profit = monthly_income - monthly_cost
-current_quarter = monthly_profit * 3
-projected_annual = monthly_profit * 12
-
-# --- Quarterly Results & Year-End Summary ---
-st.header("📊 Quarterly Results & Year-End Summary")
-
-# --- Projected Quarter and Annual ---
-st.subheader("🟢 Projected Results (Auto-Calculated)")
-col1, col2 = st.columns(2)
-col1.metric("Projected Quarter Profit", f"€{current_quarter:,.2f}")
-col2.metric("Projected Annual Profit", f"€{projected_annual:,.2f}")
-
-# --- Manual Quarterly Inputs ---
-st.subheader("📝 Enter Manual Results for Quarters 1–4")
-col1, col2, col3, col4 = st.columns(4)
-manual_q1 = col1.number_input("Quarter 1 Profit", min_value=0.0, step=100.0)
-manual_q2 = col1.number_input("Quarter 2 Profit", min_value=0.0, step=100.0)
-manual_q3 = col1.number_input("Quarter 3 Profit", min_value=0.0, step=100.0)
-manual_q4 = col1.number_input("Quarter 4 Profit", min_value=0.0, step=100.0)
-
-# --- 4/4 Calculation ---
-four_quarter_total = manual_q1 + manual_q2 + manual_q3 + manual_q4
-st.subheader("📅 4/4 Calculation")
-st.metric("Total of Manual Quarters", f"€{four_quarter_total:,.2f}")
+monthly_income
