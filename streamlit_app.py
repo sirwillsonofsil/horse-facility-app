@@ -20,23 +20,23 @@ def expense_block(label, key_prefix):
     st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
     return quarterly
 
-def annual_only_block(label, key_prefix):
+def annual_expense_block(label, key_prefix):
     st.markdown(f"### {label}")
     col1, col2 = st.columns([1.5, 2])
     value = col1.number_input("Annual Value", min_value=0.0, step=100.0, key=f"{key_prefix}_value")
-    note = col2.text_input("Comment (optional)", key=f"{key_prefix}_note")
+    description = col2.text_input("Description", key=f"{key_prefix}_description")
     quarterly = value / 4
     st.markdown(f"**Quarterly Total:** ${quarterly:,.2f}")
-    if note:
-        st.markdown(f"📝 _Note: {note}_")
+    if description:
+        st.markdown(f"📝 _Description: {description}_")
     return quarterly
 
 q_insurance = expense_block("Property Insurance", "insurance")
 q_rent = expense_block("Property Rent", "rent")
 q_electric = expense_block("General Electric", "electric")
 q_water = expense_block("General Water", "water")
-q_maintenance = annual_only_block("Maintenance", "maintenance")
-q_misc = annual_only_block("Miscellaneous", "misc")
+q_maintenance = annual_expense_block("Maintenance", "maintenance")
+q_misc = annual_expense_block("Miscellaneous", "misc")
 
 total_quarterly_facility_expense = q_insurance + q_rent + q_electric + q_water + q_maintenance + q_misc
 st.subheader("🏁 Total Facility Expenses (Quarterly)")
