@@ -35,18 +35,39 @@ monthly_cost = (feed + labor + utilities + misc) * horses_boarded
 monthly_profit = monthly_income - monthly_cost
 annual_profit = monthly_profit * 12
 
-st.header("📊 Results & Profit Dashboard")
+st.header("📊 Quarterly Results & Year-End Summary")
 
-# --- Output Layout ---
-col1, col2, col3 = st.columns(3)
+# --- Live Q1 Result from Dashboard Inputs ---
+monthly_income = basic_boarding * horses_boarded
+monthly_cost = (feed + labor + utilities + misc) * horses_boarded
+monthly_profit = monthly_income - monthly_cost
+quarterly_profit_q1 = monthly_profit * 3
 
+# --- Manual Quarterly Entries ---
+st.subheader("📘 Enter Future Quarter Results Manually")
+
+col_q2, col_q3, col_q4 = st.columns(3)
+with col_q2:
+    quarter2 = st.number_input("Q2 Result", step=100.0)
+with col_q3:
+    quarter3 = st.number_input("Q3 Result", step=100.0)
+with col_q4:
+    quarter4 = st.number_input("Q4 Result", step=100.0)
+
+# --- Year-End Summary ---
+year_end_total = quarterly_profit_q1 + quarter2 + quarter3 + quarter4
+
+# --- Display Results ---
+st.subheader("📅 Quarterly Breakdown")
+col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric("💰 Monthly Revenue", f"${monthly_income:,.2f}")
-
+    st.metric("📈 Q1 (Live)", f"${quarterly_profit_q1:,.2f}")
 with col2:
-    st.metric("📉 Monthly Costs", f"${monthly_cost:,.2f}")
-
+    st.metric("📘 Q2", f"${quarter2:,.2f}")
 with col3:
-    st.metric("📈 Monthly Profit", f"${monthly_profit:,.2f}")
+    st.metric("📘 Q3", f"${quarter3:,.2f}")
+with col4:
+    st.metric("📘 Q4", f"${quarter4:,.2f}")
 
-st.metric("📆 Annual Profit Projection", f"${annual_profit:,.2f}")
+st.subheader("🧾 Year-End Total")
+st.metric("📊 Annual Total", f"${year_end_total:,.2f}")
