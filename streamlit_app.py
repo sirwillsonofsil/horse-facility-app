@@ -37,29 +37,25 @@ annual_profit = monthly_profit * 12
 
 st.header("📊 Quarterly Results & Year-End Summary")
 
-# --- Live Q1 Result from Dashboard Inputs ---
+# --- Current Quarter (Live Calculation) ---
 monthly_income = basic_boarding * horses_boarded
 monthly_cost = (feed + labor + utilities + misc) * horses_boarded
 monthly_profit = monthly_income - monthly_cost
-quarterly_profit_q1 = monthly_profit * 3
+current_quarter = monthly_profit * 3
 
-# --- Current Quarter Display ---
-st.subheader("🟢 Current Quarter (Live Calculated)")
-st.metric("📈 Q1 - Current Quarter", f"${quarterly_profit_q1:,.2f}")
+# --- Display Current Quarter ---
+st.subheader("🟢 Current Quarter (Auto-Calculated)")
+st.metric("📈 Current Quarter", f"${current_quarter:,.2f}")
 
-# --- Manual Entry for Q2–Q4 ---
-st.subheader("📝 Forecast or Input Future Quarters")
-col2, col3, col4 = st.columns(3)
+# --- Manual Entry: Quarter 1–4 ---
+st.subheader("📝 Enter Past/Future Quarter Results")
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    manual_q1 = st.number_input("Quarter 1", step=100.0)
 with col2:
-    quarter2 = st.number_input("Q2", step=100.0)
+    manual_q2 = st.number_input("Quarter 2", step=100.0)
 with col3:
-    quarter3 = st.number_input("Q3", step=100.0)
+    manual_q3 = st.number_input("Quarter 3", step=100.0)
 with col4:
-    quarter4 = st.number_input("Q4", step=100.0)
-
-# --- Total Summary Below ---
-year_end_total = quarterly_profit_q1 + quarter2 + quarter3 + quarter4
-
-st.subheader("📅 Year-End Total")
-st.metric("📊 Total for All Quarters", f"${year_end_total:,.2f}")
+    manual_q4 = st.number_input("Quarter
 
